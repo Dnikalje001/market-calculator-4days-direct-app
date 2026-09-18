@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Market Calculator",
+    "slug": "market-calculator",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/images/icon.png",
+    "plugins": ["expo-router"],
+    "android": {
+      "package": "com.deva.marketcalculator",
+      "icon": "./assets/images/icon.png"
+    }
+  }
+}
