@@ -26,7 +26,6 @@ export type AuditLine = {
   values: CellValue[];
   total?: number;
   directLastDigit?: number;
-  plusFiveLastDigit?: number;
   status: "MATCH" | "NO_MATCH" | "SKIP";
   skipReason?: "MISSING_VALUE" | "ASTERISK" | "AFTER_MAIN_CELL";
 };

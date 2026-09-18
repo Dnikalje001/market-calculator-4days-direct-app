@@ -49,9 +49,8 @@ export function evaluateTriplet(
   }
   const total = numericValues.reduce((sum, value) => sum + value, 0);
   const directLastDigit = total % 10;
-  const plusFiveLastDigit = (total + 5) % 10;
   const digits = mainDigits(mainValue);
-  const matches = digits.includes(directLastDigit) || (isFourthDay && digits.includes(plusFiveLastDigit));
+  const matches = digits.includes(directLastDigit);
 
   return {
     criteria: item.criteria,
@@ -60,7 +59,6 @@ export function evaluateTriplet(
     values: numericValues,
     total,
     directLastDigit,
-    ...(isFourthDay ? { plusFiveLastDigit } : {}),
     status: matches ? "MATCH" : "NO_MATCH"
   };
 }

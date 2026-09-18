@@ -19,7 +19,6 @@ export type FourthDayPredictionLine = {
   values: CellValues[string][];
   total?: number;
   directLastDigit?: number;
-  plusFiveLastDigit?: number;
   missingCells: string[];
 };
 
@@ -118,7 +117,6 @@ function buildFourthDayPrediction(
       );
 
       const directLastDigit = total % 10;
-      const plusFiveLastDigit = (total + 5) % 10;
 
       return {
         criteria: item.criteria,
@@ -127,7 +125,6 @@ function buildFourthDayPrediction(
         values: rawValues,
         total,
         directLastDigit,
-        plusFiveLastDigit,
         missingCells: [],
       };
     });
