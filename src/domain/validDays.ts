@@ -34,3 +34,48 @@ export function selectFourValidDays(pattern: Pattern, values: CellValues, firstM
   }
   return { days, skippedMainCells, ...(days.length < 4 ? { waitingFor: mainCell } : {}) };
 }
+
+/**
+ * Branch groups use the exact market calendar sequence.
+ * Unlike root groups, a branch does not skip an invalid/asterisk main cell
+ * to search for a later valid day.
+ */
+export function selectFourBranchDays(
+  pattern: Pattern,
+  values: CellValues,
+  firstMainCell: string,
+  firstStartCell: string
+): ValidDaySelection {
+  let mainCell = firstMainCell.toUpperCase()
+  let startCell = firstStartCell.toUpperCase()
+  const days: ValidDay[] = []
+  const skippedMainCells: string[] = []
+
+  for (let scanned = 0; scanned < 32 && days.length < 4; scanned += 1) {
+    const value = values[mainCell]
+
+    if (value === "*") {
+      skippedMainCells.push(mainCell)
+    } else if (twoDigits(value)) {
+      days.push({
+        mainCell,
+        startCell,
+      })
+    } else {
+      return {
+        days,
+        skippedMainCells,
+        waitingFor: mainCell,
+      }
+    }
+
+    mainCell = nextMainCell(pattern, mainCell)
+    startCell = nextStartCells(pattern, startCell, 2)[1]
+  }
+
+  return {
+    days,
+    skippedMainCells,
+    ...(days.length < 4 ? { waitingFor: mainCell } : {}),
+  }
+}

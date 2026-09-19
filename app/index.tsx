@@ -97,6 +97,7 @@ export default function Home() {
   const [batchValues, setBatchValues] = useState("");
   const [savedValues, setSavedValues] = useState<CellValues>({});
   const [rowDates, setRowDates] = useState<Record<number, string>>({});
+  const mainScrollRef = useRef<ScrollView>(null);
   const rowNumberScrollRef = useRef<ScrollView>(null);
   const chartDataScrollRef = useRef<ScrollView>(null);
 
@@ -517,6 +518,8 @@ if (selectedMarketId === null) {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
+        ref={mainScrollRef}
+        stickyHeaderIndices={[0]}
         contentContainerStyle={[
           styles.page,
           {
@@ -645,6 +648,8 @@ if (selectedMarketId === null) {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
+        ref={mainScrollRef}
+        stickyHeaderIndices={[0]}
         contentContainerStyle={[
           styles.page,
           tab === null && {
@@ -1032,6 +1037,14 @@ if (selectedMarketId === null) {
               <AuditReport
                 records={records}
                 pattern={market.pattern}
+                onGreyPress={() => {
+                  setTimeout(() => {
+                    mainScrollRef.current?.scrollTo({
+                      y: 520,
+                      animated: true,
+                    });
+                  }, 100);
+                }}
               />
             </View>
           </View>

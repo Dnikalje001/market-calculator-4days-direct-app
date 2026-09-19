@@ -9,7 +9,7 @@ import {
   resolveSequenceForStart,
   nextStartCells,
 } from "./sequenceResolver";
-import { selectFourValidDays } from "./validDays";
+import { selectFourBranchDays, selectFourValidDays } from "./validDays";
 import { CellValues, GroupAudit, SequenceTemplate } from "./types";
 
 export type FourthDayPredictionLine = {
@@ -162,7 +162,7 @@ export function runRootValidGroup(pattern: Pattern, templates: SequenceTemplate[
 }
 
 export function runBranchValidGroup(pattern: Pattern, templates: SequenceTemplate[], values: CellValues, cellOrder: string[], firstMainCell: string, firstStartCell: string): ValidGroupRun {
-  const selection = selectFourValidDays(pattern, values, firstMainCell, firstStartCell);
+  const selection = selectFourBranchDays(pattern, values, firstMainCell, firstStartCell);
   if (selection.waitingFor) {
     const partialDays = selection.days.map((day, index) =>
       evaluateDay(

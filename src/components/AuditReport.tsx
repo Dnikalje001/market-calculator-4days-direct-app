@@ -6,9 +6,11 @@ import { Pattern } from "../domain/markets";
 export function AuditReport({
   records,
   pattern,
+  onGreyPress,
 }: {
   records: TraversalRecord[];
   pattern: Pattern;
+  onGreyPress?: () => void;
 }) {
 const [openGroups, setOpenGroups] = useState<Record<number, boolean>>({});
 
@@ -80,7 +82,8 @@ records.forEach((record, originalIndex) => {
     }
 
     if (statusFilter === "GREY") {
-      return isPartial;
+      const branchCriteria = record.branch?.criteria;
+      return record.kind === "BRANCH" && isPartial && record.audit.days.length > 0 && record.skippedMainCells.length === 0 && branchCriteria !== undefined && record.audit.days.every((day) => day.matchingCriteria.includes(branchCriteria));
     }
 
     return true;
@@ -93,7 +96,7 @@ records.forEach((record, originalIndex) => {
         {(["ALL", "GREEN", "RED", "GREY"] as const).map((filter) => (
           <Pressable
             key={filter}
-            onPress={() => setStatusFilter(filter)}
+            onPress={() => { setStatusFilter(filter); if (filter === "GREY") onGreyPress?.(); }}
             style={[
               styles.filterButton,
               statusFilter === filter && styles.filterButtonActive,
@@ -128,14 +131,16 @@ records.forEach((record, originalIndex) => {
               item.root.record.audit.commonCriteria.length > 0
             ).length;
 
-        const visibleRoot =
-          group.root && matchesStatusFilter(group.root.record)
-            ? group.root
-            : null;
-
         const visibleBranches = group.branches.filter(({ record }) =>
           matchesStatusFilter(record)
         );
+
+        const visibleRoot =
+          group.root &&
+          (matchesStatusFilter(group.root.record) ||
+            (statusFilter === "GREY" && visibleBranches.length > 0))
+            ? group.root
+            : null;
 
         if (!visibleRoot && visibleBranches.length === 0) {
           return null;
