@@ -141,7 +141,7 @@ export function runRootValidGroup(pattern: Pattern, templates: SequenceTemplate[
   if (selection.waitingFor) {
     const partialDays = selection.days.map((day, index) =>
       evaluateDay(
-        resolveSequenceForStart(pattern, templates, day.startCell!),
+        resolveSequenceForMain(templates, day.mainCell),
         values,
         day.mainCell,
         asMainText(values[day.mainCell]),
