@@ -142,6 +142,8 @@ records.forEach((record, originalIndex) => {
         }
 
         const isRootOpen = openRootSections[groupIndex] === true;
+        const rootRecordIndex = visibleRoot?.originalIndex;
+        const isRootGroupOpen = rootRecordIndex !== undefined && openGroups[rootRecordIndex] === true;
 
         const branchFamilies = new Map<
           number,
@@ -185,11 +187,7 @@ records.forEach((record, originalIndex) => {
                       : styles.headingNeutral,
                 ]}
               >
-                {hasBranches
-                  ? isRootOpen
-                    ? "▼ "
-                    : "▶ "
-                  : "• "}
+                {isRootOpen ? "\u25BC " : "\u25B6 "}
 
                 {statusFilter === "GREEN"
                   ? `${greenRootNumber}. Root Group`
@@ -202,7 +200,14 @@ records.forEach((record, originalIndex) => {
             {isRootOpen && (
               <View style={styles.branchList}>
                 {visibleRoot && (
-                  <View style={{ marginTop: 8 }}>
+                  <View style={{ marginTop: 8, marginLeft: 12, borderLeftWidth: 2, borderLeftColor: "#d9e2ec", paddingLeft: 10, paddingVertical: 6 }}>
+                    <Pressable onPress={() => rootRecordIndex !== undefined && setOpenGroups((current) => ({ ...current, [rootRecordIndex]: !current[rootRecordIndex] }))}>
+                      <Text style={{ fontWeight: "700", color: "#6a1b9a", fontSize: 15 }}>
+                        {isRootGroupOpen ? "\u25BC " : "\u25B6 "}Group 1 {"\u2022"} {visibleRoot.record.audit.days.map((day) => day.mainCell).join(" \u2192 ")}
+                      </Text>
+                    </Pressable>
+                    {isRootGroupOpen && (
+                      <View style={{ marginTop: 8 }}>
                     {visibleRoot.record.skippedMainCells.length > 0 && (
                       <Text style={styles.skip}>
                         Skipped main cells: {visibleRoot.record.skippedMainCells.join(", ")}
@@ -265,6 +270,8 @@ records.forEach((record, originalIndex) => {
                         ? visibleRoot.record.audit.commonCriteria.map((value) => `C${value}`).join(", ")
                         : "None"}
                     </Text>
+                  </View>
+                    )}
                   </View>
                 )}
                 {Array.from(branchFamilies.entries()).map(
